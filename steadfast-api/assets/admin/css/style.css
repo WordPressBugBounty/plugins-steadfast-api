@@ -1,0 +1,234 @@
+/**
+*Admin Style Sheet
+*/
+
+.column-send_steadfast .steadfast_send {
+    background: #c6e1c6;
+    color: #5b841b;
+    border: none;
+    border-radius: 5px;
+    width: 77px;
+    height: 32px;
+    cursor: pointer;
+}
+
+.column-send_steadfast .steadfast-send-success {
+    background: #3f9668;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    width: 77px;
+    height: 32px;
+    cursor: inherit;
+}
+
+.column-send_steadfast .steadfast-failed {
+    background: #f80000;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    width: 77px;
+    height: 32px;
+    cursor: pointer;
+}
+
+/*Tooltips*/
+
+.column-send_steadfast .tooltip {
+    visibility: visible;
+    transition: 0.5s;
+    position: relative;
+}
+
+.column-send_steadfast span.tooltip-text {
+    left: 50%;
+    top: 0;
+    background: black;
+    position: absolute;
+    height: 30px;
+    color: white;
+    border-radius: 5px;
+    transform: translateX(-50%);
+    padding: 0 10px;
+    white-space: nowrap;
+    visibility: hidden;
+}
+
+.column-send_steadfast .tooltip-text::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    border: 10px solid;
+    border-color: #000000 #0000 #0000 #0000;
+}
+
+.column-send_steadfast .tooltip:hover .tooltip-text {
+    top: -42px;
+    visibility: visible;
+    font-size: 13px !important;
+}
+
+/*
+*  Congignment ID
+*/
+
+.column-consignment_id .std-consignment-id {
+    border: none;
+    border-radius: 4px;
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+    margin: -0.25em 0;
+    width: 77px;;
+    height: 32px;
+    text-align: center;
+    justify-content: center;
+    cursor: copy;
+    background: #c6e1c6;
+    color: #5b841b;
+}
+
+
+.column-print_details a.std-print-order-detail {
+    text-decoration: none !important;
+    color: white;
+    padding: 8px 25px;
+    font-size: 12px;
+    border-radius: 5px;
+    background: #3f9668;
+}
+
+.column-print_details .std-print-order-detail a:hover {
+    color: black !important;
+}
+
+.std-admin-menu .std-dashboard .std-balance {
+    border: 1px solid white;
+    text-align: center;
+    border-radius: 5px;
+    background: #0e80e9;
+    color: white;
+    width: 100px;
+    height: 35px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.std-admin-menu .std-dashboard .std-whatsapp {
+    margin-left: 20px;
+}
+
+.std-admin-menu .std-settings table tr td input[type="text"], input[type="email"], input[type="password"] {
+    width: 240px;
+}
+
+/*
+* Delivery Status.
+*/
+
+.column-delivery_status .std-order-status {
+    display: flex;
+    align-items: center;
+}
+
+.std-order-status #std-delivery-status {
+    width: 80px;
+    height: 35px;
+    border: 1px solid white;
+    text-align: center !important;
+    border-radius: 5px;
+    background: #0e80e9;
+    color: white;
+    cursor: pointer;
+}
+
+.std-order-status #std-re-check-delivery-status {
+    background: lightblue;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 6px 7px 6px 7px !important;
+    margin-right: 4px;
+    border-radius: 5px;
+}
+
+.std-order-status .std-rechecking-btn {
+    width: 62px !important;
+    font-size: 14px !important;
+}
+
+/*
+* All delivery status button.
+*/
+
+.std-order-status .std-unauthorized, .std-in-review, .std-pending, .std-delivered, .std-cancelled, .std-hold, .std-unknown, .std-partial-delivered {
+    width: 100px;
+    border: none;
+    color: white;
+    pointer-events: none;
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-size: 10px;
+    background: #0000FF;
+    text-align: center;
+}
+
+.std-order-status .std-unauthorized {
+    background: rgba(252, 47, 47, 0.82);
+}
+
+.std-order-status .std-pending {
+    background: #CCCCCC;
+}
+
+.std-order-status .std-delivered {
+    background: #006400;
+}
+
+.std-order-status .std-cancelled {
+    background: #8B0000;
+}
+
+.std-order-status .std-hold {
+    background: #FFA500;
+}
+
+.std-order-status .std-unknown {
+    background: #808080;
+}
+
+.std-order-status .std-partial-delivered {
+    background: #FFFF00;
+    color: black;
+}
+
+.std-order-status .std-partial-delivered-approval-pending, .std-cancelled-approval-pending, .std-delivered-approval-pending, .std-unknown-approval-pending {
+    background: #7CFC00;
+    width: 85px;
+    height: 23px;
+    border: none;
+    border-radius: 9px;
+    line-height: normal;
+    color: black;
+    font-size: 10px;
+    padding: 5px 10px;
+}
+
+
+.std-order-status .std-cancelled-approval-pending {
+    background: #FF0000;
+    width: 86px !important;
+    color: white;
+}
+
+.std-order-status .std-delivered-approval-pending {
+    background: #008000;
+    color: white;
+}
+
+.std-order-status .std-unknown-approval-pending {
+    background: #A9A9A9;
+    color: black;
+}
+
+

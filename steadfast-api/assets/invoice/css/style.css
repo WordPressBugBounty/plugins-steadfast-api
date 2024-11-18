@@ -1,0 +1,543 @@
+/**
+* Front Style
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&amp;display=swap");
+
+.steadfast-invoice table th {
+    background-color: transparent !important;
+}
+
+.steadfast-invoice table tbody td {
+    background-color: transparent !important;
+}
+
+.steadfast-invoice table tbody tr:nth-child(2n) td, fieldset, fieldset legend {
+    background-color: transparent !important;
+}
+
+.steadfast-invoice .stdf-courier-logo {
+    width: 16% !important;
+}
+
+.steadfast-invoice {
+    color: #666;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6em;
+    overflow-x: hidden;
+    background-color: #f5f6fa;
+}
+
+.steadfast-invoice table {
+    width: 100%;
+    caption-side: bottom;
+    border-collapse: collapse;
+    border: none;
+}
+
+.steadfast-invoice table td {
+    border: none;
+}
+
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+.steadfast-invoice .hr hr {
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box; /* 1 */
+    height: 0; /* 1 */
+    overflow: visible; /* 2 */
+}
+
+.steadfast-invoice table tr td {
+    padding: 10px 15px;
+    line-height: 1.55em;
+}
+
+.steadfast-invoice table thead tr th {
+    padding: 6px 8px;
+    border: none !important;
+    text-align: left;
+}
+
+.steadfast-invoice table thead tr th:last-child {
+    text-align: right;
+}
+
+.steadfast-invoice .tm_table .std-payment-info {
+    padding-bottom: 10px;
+}
+
+.steadfast-invoice .std-payment-info table tbody tr td {
+    padding-bottom: 0;
+}
+
+/*--------------------------------------------------------------
+2. Typography
+----------------------------------------------------------------*/
+
+.steadfast-invoice .std-consignment {
+    margin-bottom: 15px !important;
+}
+
+.steadfast-invoice .std-consignment h5 {
+    margin-top: 15px;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+/*--------------------------------------------------------------
+3. Invoice General Style
+----------------------------------------------------------------*/
+.steadfast-invoice .tm_f16 {
+    font-size: 16px;
+}
+
+.steadfast-invoice .tm_f30 {
+    font-size: 30px;
+}
+
+.steadfast-invoice .tm_semi_bold {
+    font-weight: 600;
+}
+
+.steadfast-invoice .tm_bold {
+    font-weight: 700;
+}
+
+.steadfast-invoice .tm_m0 {
+    margin: 0;
+}
+
+.steadfast-invoice .tm_pt0 {
+    padding-top: 0;
+}
+
+.steadfast-invoice .tm_width_1 {
+    width: 8.33333333%;
+}
+
+.steadfast-invoice .tm_width_2 {
+    width: 16.66666667%;
+}
+
+.steadfast-invoice .tm_width_3 {
+    width: 25% !important;
+}
+
+.steadfast-invoice .tm_width_4 {
+    width: 33.33333333% !important;
+}
+
+.steadfast-invoice .tm_border {
+    border: 1px solid #dbdfea;
+}
+
+.steadfast-invoice .tm_border_bottom {
+    border-bottom: 1px solid #dbdfea;
+}
+
+.steadfast-invoice .tm_border_top {
+    border-top: 1px solid #dbdfea;
+}
+
+.steadfast-invoice .tm_round_border {
+    border: 1px solid #dbdfea;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.steadfast-invoice .tm_primary_color {
+    color: #111;
+}
+
+.steadfast-invoice .tm_ternary_color {
+    color: #b5b5b5;
+}
+
+.steadfast-invoice .tm_gray_bg {
+    background: #f5f6fa;
+}
+
+.steadfast-invoice .tm_invoice_in {
+    position: relative;
+    z-index: 100;
+}
+
+.steadfast-invoice .tm_container {
+    max-width: 900px;
+    padding: 30px 15px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.steadfast-invoice .tm_text_uppercase {
+    text-transform: uppercase;
+}
+
+.steadfast-invoice .tm_text_right {
+    text-align: right;
+}
+
+.steadfast-invoice .tm_align_center {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    /*align-items: center;*/
+}
+
+.steadfast-invoice .tm_border_top_0 {
+    border-top: 0;
+}
+
+.steadfast-invoice .tm_border_none {
+    border: none !important;
+}
+
+.steadfast-invoice .tm_table_responsive {
+    overflow-x: auto;
+}
+
+.steadfast-invoice .tm_table_responsive > table {
+    min-width: 600px;
+}
+
+.steadfast-invoice hr {
+    background: #dbdfea;
+    height: 1px;
+    border: none;
+    margin: 0;
+}
+
+.steadfast-invoice .tm_invoice {
+    background: #fff;
+    border-radius: 10px;
+    padding: 50px;
+}
+
+.steadfast-invoice .tm_invoice_footer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.steadfast-invoice .tm_invoice_footer table {
+    margin-top: -1px;
+}
+
+.steadfast-invoice .tm_invoice_footer .tm_left_footer {
+    width: 58%;
+    padding: 10px 15px;
+    -webkit-box-flex: 0;
+    -ms-flex: none;
+    flex: none;
+}
+
+.steadfast-invoice .tm_invoice_footer .tm_right_footer {
+    width: 42%;
+}
+
+.steadfast-invoice .tm_note {
+    margin-top: 30px;
+    font-style: italic;
+}
+
+.steadfast-invoice .tm_invoice_right {
+    -webkit-box-flex: 0;
+    -ms-flex: none;
+    flex: none;
+    width: 60%;
+}
+
+.steadfast-invoice .tm_invoice_head {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.steadfast-invoice .tm_invoice_head .tm_invoice_right div {
+    line-height: 1em;
+}
+
+.steadfast-invoice .tm_invoice_info {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_seperator {
+    min-height: 2px;
+    border-radius: 1.6em;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin-right: 20px;
+    background-color: black;
+}
+
+.steadfast-invoice .invoice_img img {
+    height: 25px;
+}
+
+.steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_info_list {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_info_list > *:not(:last-child) {
+    margin-right: 20px;
+}
+
+.steadfast-invoice .tm_invoice.tm_style1 .tm_logo img {
+    max-height: 50px;
+}
+
+.steadfast-invoice .tm_invoice_wrap {
+    position: relative;
+}
+
+.steadfast-invoice .tm_note_list li:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+.steadfast-invoice .tm_list.tm_style1 {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.steadfast-invoice .tm_list.tm_style1 svg {
+    width: 16px;
+    height: initial;
+}
+
+.steadfast-invoice .tm_list.tm_style1 li {
+    padding-left: 25px;
+    position: relative;
+}
+
+.steadfast-invoice .tm_list.tm_style1 li:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+.steadfast-invoice .tm_list.tm_style1.tm_text_right li {
+    padding-left: 0;
+    padding-right: 25px;
+}
+
+.steadfast-invoice .tm_padd_15_20 {
+    padding: 15px 20px;
+}
+
+
+.steadfast-invoice .tm_padd_15 {
+    padding: 15px;
+}
+
+
+@media (max-width: 767px) {
+    .steadfast-invoice .tm_invoice {
+        padding: 30px 20px;
+    }
+
+    .steadfast-invoice .tm_invoice .tm_right_footer {
+        width: 100%;
+    }
+
+    .steadfast-invoice .tm_invoice_footer {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: reverse;
+        -ms-flex-direction: column-reverse;
+        flex-direction: column-reverse;
+    }
+
+    .steadfast-invoice .tm_invoice_footer .tm_left_footer {
+        width: 100%;
+        border-top: 1px solid #dbdfea;
+        margin-top: -1px;
+        padding: 15px 0;
+    }
+
+    .steadfast-invoice .tm_invoice_footer.tm_type1 {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style2 .tm_invoice_info > * {
+        width: 100%;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1.tm_type1 {
+        padding: 30px 20px;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1.tm_type1 .tm_invoice_head {
+        height: initial;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1.tm_type1 .tm_invoice_info {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-align: start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1.tm_type1 .tm_invoice_seperator {
+        width: 100%;
+        -webkit-transform: initial;
+        transform: initial;
+        right: 0;
+        top: 0;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1.tm_type1 .tm_logo img {
+        max-height: 60px;
+    }
+
+    .steadfast-invoice .tm_border_none_md {
+        border: none !important;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1.tm_type1 .tm_invoice_seperator,
+    .tm_invoice.tm_style1.tm_type1 .tm_invoice_seperator img {
+        -webkit-transform: initial;
+        transform: initial;
+    }
+
+    .steadfast-invoice .tm_shape_2.tm_type1 {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .steadfast-invoice .tm_border_none_sm {
+        border: none !important;
+    }
+
+    .steadfast-invoice .tm_m0_sm {
+        margin-bottom: 0;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1 .tm_logo {
+        margin-bottom: 10px;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_head {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_head .tm_invoice_left,
+    .tm_invoice.tm_style1 .tm_invoice_head .tm_invoice_right {
+        width: 100%;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_head .tm_invoice_right {
+        text-align: left;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_left {
+        max-width: 100%;
+    }
+
+    .steadfast-invoice .tm_f50 {
+        font-size: 30px;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_info {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: reverse;
+        -ms-flex-direction: column-reverse;
+        flex-direction: column-reverse;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_seperator {
+        -webkit-box-flex: 0;
+        -ms-flex: none;
+        flex: none;
+        width: 100%;
+        margin-right: 0;
+        min-height: 5px;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_info_list {
+        width: 100%;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1 .tm_invoice_seperator + .tm_invoice_info_list {
+        margin-bottom: 5px;
+    }
+
+    .steadfast-invoice .tm_f30 {
+        font-size: 22px;
+    }
+}
+
+/*--------------------------------------------------------------
+  Will apply only print window
+----------------------------------------------------------------*/
+@media print {
+
+    @page {
+        size: auto;
+        margin: 0;
+    }
+
+    .steadfast-invoice .tm_gray_bg {
+        background-color: #f5f6fa !important;
+        -webkit-print-color-adjust: exact;
+
+    }
+
+    .steadfast-invoice .tm_ternary_color {
+        color: #b5b5b5 !important;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .steadfast-invoice .tm_hide_print {
+        display: none !important;
+    }
+
+    .steadfast-invoice .hr hr {
+        background: #dbdfea !important;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .steadfast-invoice .tm_invoice.tm_style1.tm_type1 .tm_invoice_seperator {
+        top: initial;
+        margin-right: 0;
+        border-radius: 0;
+        -webkit-transform: skewX(35deg);
+        transform: skewX(35deg);
+        position: absolute;
+        height: 100%;
+        width: 57.5%;
+        right: -60px;
+        overflow: hidden;
+        border: none;
+    }
+}
