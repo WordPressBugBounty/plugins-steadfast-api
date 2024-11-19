@@ -2,11 +2,11 @@
 Contributors: steadfastit,khorshedalamwp,badrulsajib
 Donate link: https://steadfast.com.bd/
 Plugin URI: https://wordpress.org/plugins/steadfast-api/
-Tags: SteadFast, SteadFast Courier, Send to steadfast, Woo steadfast
+Tags: steadfast, steadfast courier, send to steadfast, steadfast api
 Requires at least: 6.5.5
-Tested up to: 6.6.2
+Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Tested up to WooCommerce: 9.2.3
 Text Domain: steadfast-api
 License: GPLv2

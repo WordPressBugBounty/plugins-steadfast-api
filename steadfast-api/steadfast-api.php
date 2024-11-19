@@ -3,7 +3,7 @@
 /**
  * Plugin Name: SteadFast API
  * Description: Send to SteadFast gives you the ability to send your parcel request to SteadFast directly from your WooCommerce dashboard, it enables booking automation from your WordPress website. You can send your parcel to SteadFast one by one, or you can choose bulk send from "bulk action" dropdown.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: SteadFast Courier LTD
  * Text Domain: steadfast-api
  * Author URI: https://steadfast.com.bd/
