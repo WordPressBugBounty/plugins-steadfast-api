@@ -41,7 +41,7 @@ jQuery(document).ready(function () {
             type: 'post',
             url: ajaxurl,
             data: {
-                'action': 'api_ajax_call',
+                'action': 'send_to_steadfast',
                 'order_id': orderId,
                 'order_nonce': orderNonce,
             },
@@ -139,7 +139,7 @@ jQuery(document).ready(function () {
 
     jQuery(document).on('click', "#std-delivery-status", function (e) {
         e.preventDefault();
-        console.log('fdgb')
+        
         var thisButton = jQuery(this),
             consignmentID = thisButton.data("consignment-id"),
             orderID = thisButton.data("order-id"),
@@ -257,10 +257,68 @@ jQuery(document).ready(function () {
             }
         });
     });
-
+    
+   
     jQuery('.amount-disable').attr('disabled', 'disabled');
     jQuery('.steadfast-send-success').html('Success').attr('disabled', 'disabled').addClass('tooltip');
     jQuery('.tooltip').append('<span class="tooltip-text">This parcel is already send to SteadFast!</span>');
 });
 
 
+   // Check Courier Score
+jQuery(document).ready(function ($) {
+    var $modal = $('#stdf-customer-info-modal');
+    var $overlay = $('#stdf-modal-overlay');
+    var $closeButton = $('#stdf-close-modal');
+
+    $(document).on('click', '#stdf-courier-score', function (e) {
+        e.preventDefault();
+
+        var thisButton = $(this);
+        thisButton.find('span').text('Refreshing...');
+        var order_id = thisButton.data('order-id');
+        var stdfNonce = thisButton.data('courier-score-nonce');
+        thisButton.removeClass("stdf-success-ratio");
+
+        jQuery.ajax({
+            url: ajaxurl,
+            data: {
+                "action": "get_order_info",
+                "order_id": order_id,
+                "stdf_nonce": stdfNonce,
+            }, type: 'post',
+
+            success: function (response) {
+                if (response.success) {
+                    let success_ratio = response.data.success_ratio;
+                    var content = `
+                        <p><strong>📦Total Orders :</strong> ${response.data.total_parcels}</p>
+                        <p><strong>✅Total Delivered :</strong> ${response.data.total_delivered}</p>
+                        <p><strong>❌Total Cancelled:</strong> ${response.data.total_cancelled}</p>
+                    `;
+                    $('#stdf-customer-info-content').html(content);
+
+                    thisButton.find('span').text(success_ratio);
+                    thisButton.addClass("stdf-success-ratio");
+                    $modal.show();
+                    $overlay.show();
+                } else {
+                    alert('Error: ' + response.data);
+                }
+            },
+            error: function () {
+                thisButton.html('Failed');
+            },
+        });
+    });
+
+    $closeButton.on('click', function () {
+        $modal.hide();
+        $overlay.hide();
+    });
+
+    $overlay.on('click', function () {
+        $modal.hide();
+        $overlay.hide();
+    });
+});

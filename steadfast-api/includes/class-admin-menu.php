@@ -14,56 +14,8 @@ if ( ! class_exists( 'STDF_Admin_Menu' ) ) {
 		function __construct() {
 			add_action( 'admin_menu', array( $this, 'register_steadfast_admin_menu_page' ) );
 			add_action( 'admin_init', array( $this, 'register_admin_settings_fields' ) );
-			add_action( 'wp_ajax_std_current_balance', array( $this, 'check_balance_ajax' ) );
-			add_action( 'wp_ajax_stdf_delivery_status', array( $this, 'check_delivery_status' ) );
 		}
 
-		function check_delivery_status() {
-
-			$consignment_id = isset( $_POST['consignment_id'] ) ? sanitize_text_field( wp_unslash( $_POST['consignment_id'] ) ) : '';
-			$order_id       = isset( $_POST['order_id'] ) ? sanitize_text_field( wp_unslash( $_POST['order_id'] ) ) : '';
-			$stdf_nonce     = isset( $_POST['stdf_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['stdf_nonce'] ) ) : '';
-
-			if ( ! empty( $consignment_id ) && ! empty( $order_id ) && wp_verify_nonce( $stdf_nonce, 'stdf_delivery_status_nonce' ) ) {
-				$response = stdf_get_status_by_consignment_id( $consignment_id );
-
-				if ( $response == 'unauthorized' ) {
-					$data = 'unauthorized';
-				} else if ( $response !== 'failed' ) {
-					$data = $response['delivery_status'];
-					update_post_meta( $order_id, 'stdf_delivery_status', $data );
-				} else {
-					$data = $response;
-				}
-
-				wp_send_json_success( $data, 200 );
-			}
-		}
-
-		/**
-		 * @return void
-		 */
-		function check_balance_ajax() {
-
-			$value      = isset( $_POST['value'] ) ? sanitize_text_field( wp_unslash( $_POST['value'] ) ) : '';
-			$stdf_nonce = isset( $_POST['stdf_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['stdf_nonce'] ) ) : '';
-
-			if ( ! empty( $value ) && wp_verify_nonce( $stdf_nonce, 'stdf-balance-verify' ) ) {
-
-				$response = $this->check_current_balance( $value );
-
-				if ( $response == 'unauthorized' ) {
-					$data = 'unauthorized';
-				} else if ( $response !== 'failed' ) {
-					$data = $response['current_balance'];
-				} else {
-					$data = 'failed';
-				}
-
-				wp_send_json_success( $data, 200 );
-			}
-
-		}
 
 		/**
 		 * @return void
@@ -275,46 +227,6 @@ if ( ! class_exists( 'STDF_Admin_Menu' ) ) {
 			<?php
 		}
 
-		/**
-		 * @param $check
-		 *
-		 * @return false|mixed|string|void
-		 */
-		function check_current_balance( $check ) {
-
-			if ( $check !== 'check-yes' ) {
-				return false;
-			}
-
-			$checkbox       = get_option( 'stdf_settings_tab_checkbox', false );
-			$api_secret_key = get_option( 'api_settings_tab_api_secret_key', false );
-			$api_key        = get_option( 'api_settings_tab_api_key', false );
-
-			$args = array(
-				'method'      => 'GET',
-				'headers'     => array(
-					'content-type' => 'application/json',
-					'api-key'      => sanitize_text_field( $api_key ),
-					'secret-key'   => sanitize_text_field( $api_secret_key ),
-				),
-				'timeout'     => 45,
-				'redirection' => 5,
-				'httpversion' => '1.0',
-				'cookies'     => array()
-			);
-			if ( $checkbox == 'yes' ) {
-				$response = wp_remote_get( 'https://portal.packzy.com/api/v1/get_balance', $args );
-
-				$request = json_decode( wp_remote_retrieve_body( $response ), true );
-				if ( $request['status'] == '200' ) {
-					return $request;
-				} else {
-					return 'unauthorized';
-				}
-			} else {
-				return 'failed';
-			}
-		}
 
 		/**
 		 * @return self|null

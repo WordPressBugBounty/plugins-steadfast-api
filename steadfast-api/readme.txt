@@ -4,10 +4,10 @@ Donate link: https://steadfast.com.bd/
 Plugin URI: https://wordpress.org/plugins/steadfast-api/
 Tags: steadfast, steadfast courier, send to steadfast, steadfast api
 Requires at least: 6.5.5
-Tested up to: 6.7
+Tested up to: 6.7.2
 Requires PHP: 8.0
-Stable tag: 1.0.1
-Tested up to WooCommerce: 9.2.3
+Stable tag: 1.0.2
+Tested up to WooCommerce: 9.6.2
 Text Domain: steadfast-api
 License: GPLv2
 
@@ -65,6 +65,7 @@ Include Soon!
 *  SteadFast Balance Check.
 *  Print Order information.
 *  Check Order Status.
+*  Check Courier Score.
 
 == Frequently asked questions ==
 = Do I need SteadFast Merchant account to use the plugin? =
@@ -88,9 +89,16 @@ Yes, the SteadFast courier API extension module is dependent on WooCommerce.
 
 1. screenshot-1
 2. screenshot-2
+3. screenshot-3
 
 
 == Changelog ==
+
+= 1.0.2 =  
+* Check Courier Score.  
+
+= 1.0.1 = 
+* Compatibility update for WordPress version.
 
  = 1.0.0 =
  * 05-10-2024 - NEW - This is the initial release of the plugin.
