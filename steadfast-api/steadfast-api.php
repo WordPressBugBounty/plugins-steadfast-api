@@ -3,19 +3,21 @@
 /**
  * Plugin Name: SteadFast API
  * Description: Send to SteadFast gives you the ability to send your parcel request to SteadFast directly from your WooCommerce dashboard, it enables booking automation from your WordPress website. You can send your parcel to SteadFast one by one, or you can choose bulk send from "bulk action" dropdown.
- * Version: 1.0.2
+ * Version: 1.0.4
  * Author: SteadFast Courier LTD
  * Text Domain: steadfast-api
  * Author URI: https://steadfast.com.bd/
+ * Requires Plugins: woocommerce
  * License: GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
 defined( 'ABSPATH' ) || exit;
-defined( 'STDF_PLUGIN_URL' ) || define( 'STDF_PLUGIN_URL', WP_PLUGIN_URL . '/' . plugin_basename( dirname( __FILE__ ) ) . '/' );
+defined( 'STDF_PLUGIN_URL' ) || define( 'STDF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 defined( 'STDF_PLUGIN_DIR' ) || define( 'STDF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 defined( 'STDF_PLUGIN_FILE' ) || define( 'STDF_PLUGIN_FILE', plugin_basename( __FILE__ ) );
-defined( 'STDF_PLUGIN_VERSION' ) || define( 'STDF_PLUGIN_VERSION', '1.0.0' );
+defined( 'STDF_PLUGIN_VERSION' ) || define( 'STDF_PLUGIN_VERSION', '1.0.4' );
+
 
 
 /**
@@ -61,6 +63,13 @@ if ( ! class_exists( 'STDF_Courier_Main' ) ) {
 		 * @return void
 		 */
 		function admin_script() {
+		
+			$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+			if ($page == 'steadfast') {
+				wp_enqueue_style('stdf-style-dashboard', STDF_PLUGIN_URL . 'assets/admin/css/dashboard.css', array(), STDF_PLUGIN_VERSION, 'all');
+				wp_enqueue_script('stdf-script-dashboard', STDF_PLUGIN_URL . 'assets/admin/js/dashboard.js', array(), STDF_PLUGIN_VERSION);
+			}
+
 			wp_enqueue_script( 'stdf-jquery', plugins_url( '/assets/admin/js/scripts.js', __FILE__ ), array( 'jquery' ), STDF_PLUGIN_VERSION, true );
 			wp_enqueue_style( 'stdf-style-main', STDF_PLUGIN_URL . 'assets/admin/css/style.css', array(), STDF_PLUGIN_VERSION, 'all' );
 			wp_localize_script( 'ajax-script', 'stdf-api', $this->localize_scripts() );

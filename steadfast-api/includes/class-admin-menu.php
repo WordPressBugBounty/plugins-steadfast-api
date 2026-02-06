@@ -14,7 +14,21 @@ if ( ! class_exists( 'STDF_Admin_Menu' ) ) {
 		function __construct() {
 			add_action( 'admin_menu', array( $this, 'register_steadfast_admin_menu_page' ) );
 			add_action( 'admin_init', array( $this, 'register_admin_settings_fields' ) );
+
+			add_action( 'admin_init',array($this,'remove_admin_notice'));
 		}
+
+
+		function remove_admin_notice()
+		{
+			if (isset($_GET['page']) && $_GET['page'] === 'steadfast') {
+
+				remove_all_actions('admin_notices');
+				remove_all_actions('all_admin_notices');
+
+			}
+		}
+
 
 
 		/**
@@ -45,20 +59,20 @@ if ( ! class_exists( 'STDF_Admin_Menu' ) ) {
 				'stdf_settings_tab_notes' => array(
 					'title'    => esc_html__( 'Notes', 'steadfast-api'),
 					'type'     => 'checkbox',
-					'subtitle' => esc_html__( 'Please enable this check box for send customer notes', 'steadfast-api'),
+					'subtitle' => esc_html__( 'Please enable this checkbox for send customer notes', 'steadfast-api'),
 				),
 
 				'api_settings_tab_api_key' => array(
 					'title'       => esc_html__( 'API Key *', 'steadfast-api'),
 					'type'        => 'password',
-					'placeholder' => esc_html__( 'enter your api key', 'steadfast-api'),
+					'placeholder' => esc_html__( 'Enter your api key', 'steadfast-api'),
 					'subtitle'    => esc_html__( 'This field is required', 'steadfast-api'),
 				),
 
 				'api_settings_tab_api_secret_key' => array(
 					'title'       => esc_html__( 'Secret Key *', 'steadfast-api'),
 					'type'        => 'password',
-					'placeholder' => esc_html__( 'enter your secret key', 'steadfast-api'),
+					'placeholder' => esc_html__( 'Enter your secret key', 'steadfast-api'),
 					'subtitle'    => esc_html__( 'This field is required', 'steadfast-api'),
 				),
 
@@ -168,63 +182,87 @@ if ( ! class_exists( 'STDF_Admin_Menu' ) ) {
 		 * SteadFast Admin Menu Callback.
 		 * @return void
 		 */
-		function stdf_admin_menu_callback() {
-			$nonce_action = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+		function stdf_admin_menu_callback()
+		{
+			$nonce_action = isset($_GET['_wpnonce']) ? sanitize_text_field(wp_unslash($_GET['_wpnonce'])) : '';
 
-			if ( $nonce_action && wp_verify_nonce( wp_unslash( $nonce_action ), 'dashboard_tab_nonce' ) ) {
+			if ($nonce_action && wp_verify_nonce(wp_unslash($nonce_action), 'dashboard_tab_nonce')) {
 				$active_tab = 'dashboard';
-			} elseif ( wp_verify_nonce( wp_unslash( $nonce_action ), 'settings_tab_nonce' ) ) {
+			} elseif (wp_verify_nonce(wp_unslash($nonce_action), 'settings_tab_nonce')) {
 				$active_tab = 'settings';
 			} else {
 				$active_tab = 'dashboard';
 			}
 
 			?>
-            <div class="wrap">
-                <h2 class="nav-tab-wrapper">
-                    <a href="?page=steadfast&tab=dashboard&_wpnonce=<?php echo esc_attr( wp_create_nonce( 'dashboard_tab_nonce' ) ); ?>" class="nav-tab <?php echo $active_tab === 'dashboard' ? 'nav-tab-active' : ''; ?>"><?php echo esc_html__( 'Dashboard', 'steadfast-api'); ?></a>
-                    <a href="?page=steadfast&tab=settings&_wpnonce=<?php echo esc_attr( wp_create_nonce( 'settings_tab_nonce' ) ); ?>" class="nav-tab <?php echo $active_tab === 'settings' ? 'nav-tab-active' : ''; ?>"><?php echo esc_html__( 'API Settings', 'steadfast-api'); ?></a>
-                </h2>
+				<div class="wrap">
+					<h2 class="nav-tab-wrapper">
+						<a href="?page=steadfast&tab=dashboard&_wpnonce=<?php echo esc_attr(wp_create_nonce('dashboard_tab_nonce')); ?>" class="nav-tab <?php echo $active_tab === 'dashboard' ? 'nav-tab-active' : ''; ?>"><?php echo esc_html__('Dashboard', 'steadfast-api'); ?></a>
+						<a href="?page=steadfast&tab=settings&_wpnonce=<?php echo esc_attr(wp_create_nonce('settings_tab_nonce')); ?>" class="nav-tab <?php echo $active_tab === 'settings' ? 'nav-tab-active' : ''; ?>"><?php echo esc_html__('API Settings', 'steadfast-api'); ?></a>
+					</h2>
 
-                <div class="tab-content std-admin-menu">
-					<?php
-					switch ( $active_tab ) {
-						case 'settings':
-							$uploaded_image_url = get_option( 'stdf_business_logo' ); ?>
-                            <div class="wrap std-settings">
-                                <form id="std-settings-form" method="post" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" enctype="multipart/form-data">
-									<?php wp_nonce_field( 'stdf_settings_nonce', 'stdf_settings_nonce_field' ); ?>
-									<?php settings_fields( 'stdf_settings' ); ?>
-									<?php do_settings_sections( 'stdf_settings' ); ?>
-                                    <label for="std_business_logo"><h2><?php echo esc_html__( 'Business Logo', 'steadfast-api') ?></h2></label>
-                                    <input type="file" name="stdf_business_logo" id="std_business_logo"/>
-									<?php if ( $uploaded_image_url ) : ?>
-                                        <img src="<?php echo esc_attr( $uploaded_image_url ); ?>" alt="Uploaded Image" style="max-width: 150px; max-height: 80px;"/>
-									<?php endif; ?>
-									<?php submit_button(); ?>
-                                </form>
-                            </div>
-							<?php break;
+					<div class="tab-content std-admin-menu">
+						<?php
+						switch ($active_tab) {
+							case 'settings':
+								$uploaded_image_url = get_option('stdf_business_logo'); ?>
+										<div class="wrap std-settings">
+											<form id="std-settings-form" method="post" action="<?php echo esc_url(admin_url('options.php')); ?>" enctype="multipart/form-data">
+												<?php wp_nonce_field('stdf_settings_nonce', 'stdf_settings_nonce_field'); ?>
+												<?php settings_fields('stdf_settings'); ?>
+												<?php do_settings_sections('stdf_settings'); ?>
+												<label for="std_business_logo"><h2><?php echo esc_html__('Business Logo', 'steadfast-api') ?></h2></label>
+												<input type="file" name="stdf_business_logo" id="std_business_logo"/>
+												<?php if ($uploaded_image_url): ?>
+														<img src="<?php echo esc_attr($uploaded_image_url); ?>" alt="Uploaded Image" style="max-width: 150px; max-height: 80px;"/>
+												<?php endif; ?>
+												<?php submit_button(); ?>
+											</form>
+										</div>
+										<?php break;
 
-						case 'dashboard':
+							case 'dashboard':
 
-							echo '<div class="std-dashboard">';
-							echo '<h1>' . esc_html__( 'SteadFast Courier Dashboard', 'steadfast-api') . '</h1>';
-							echo '<h3>' . esc_html__( 'Check Balance', 'steadfast-api') . '</h3>';
-							echo '<button class="std-balance" data-stdf-balance-nonce="' . esc_attr( wp_create_nonce( 'stdf-balance-verify' ) ) . '" value="check-yes">' . esc_html__( 'Check', 'steadfast-api') . '</button>';
-							echo '<span class="hidden std-current-bal">' . esc_html__( 'Your Current Balance is : ', 'steadfast-api') . '<span class="balance"></span></span>';
-							echo '<h4>' . esc_html__( 'Facing an issue, Please let me know', 'steadfast-api') . '</h4>';
+								echo '<div class="std-dashboard">';
 
-							echo '<a target="_blank" href="' . esc_url( 'https://www.facebook.com/steadfastcourier' ) . '">' . esc_html__( 'Facebook', 'steadfast-api') . '</a>';
-							echo '<span class="std-whatsapp"><a target="_blank" href="' . esc_url( 'https://wa.me/+8801722743076' ) . '">' . esc_html__( 'Whatsapp', 'steadfast-api') . '</a></span>';
+								echo '<div class="std-title"></div>';
 
-							echo '</div>';
-							break;
-					} ?>
+								echo '<div class="std-section std-balance-box">';
+								echo '<h3 class="std-section-title">' . esc_html__('Check Balance', 'steadfast-api') . '</h3>';
 
-                </div>
-            </div>
-			<?php
+								echo '<button class="std-btn std-balance" data-stdf-balance-nonce="' . esc_attr(wp_create_nonce('stdf-balance-verify')) . '" value="check-yes">'
+									. esc_html__('Check', 'steadfast-api') .
+									'</button>';
+
+								echo '<div class="std-balance-result hidden std-current-bal">';
+								echo '<span>' . esc_html__('Your Current Balance is : ', 'steadfast-api') . '</span>';
+								echo '<span class="balance"></span>';
+								echo '</div>';
+								echo '</div>';
+
+								echo '<div class="std-section std-contact">';
+								echo '<h4 class="std-section-title">' . esc_html__('Facing an issue, Please let me know', 'steadfast-api') . '</h4>';
+
+								echo '<div class="std-social-links">';
+								echo '<a class="std-social std-facebook" target="_blank" href="' . esc_url('https://www.facebook.com/steadfastcourier') . '">'
+									. esc_html__('Facebook', 'steadfast-api') .
+									'</a>';
+
+								echo '<a class="std-social std-whatsapp" target="_blank" href="' . esc_url('https://wa.me/+8801722743076') . '">'
+									. esc_html__('Whatsapp', 'steadfast-api') .
+									'</a>';
+								echo '</div>';
+								echo '</div>';
+
+								echo '</div>';
+
+
+								break;
+						} ?>
+
+					</div>
+				</div>
+				<?php
 		}
 
 

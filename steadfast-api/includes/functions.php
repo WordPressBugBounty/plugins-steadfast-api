@@ -422,12 +422,24 @@ if (!function_exists('stdf_customer_courier_score')) {
 	function stdf_customer_courier_score($phone_number,$order_id)
 	{
 
-		$phone_number = preg_replace('/[^0-9]/', '', $phone_number);
-		$url = "https://portal.packzy.com/api/v1/fraud_check/" . $phone_number;
+		$api_secret_key = get_option('api_settings_tab_api_secret_key', false);
+		$api_key        = get_option('api_settings_tab_api_key', false);
 
 		$args = array(
-			'method'  => 'GET'
+			'method'      => 'GET',
+			'headers'     => array(
+				'content-type' => 'application/json',
+				'api-key'      => sanitize_text_field($api_key),
+				'secret-key'   => sanitize_text_field($api_secret_key),
+			),
+			'timeout'     => 45,
+			'redirection' => 5,
+			'httpversion' => '1.0',
+			'cookies'     => array()
 		);
+
+		$phone_number = preg_replace('/[^0-9]/', '', $phone_number);
+		$url = "https://portal.packzy.com/api/v1/fraud_check/" . $phone_number;
 
 		$response = wp_remote_get($url, $args);
 
@@ -437,11 +449,23 @@ if (!function_exists('stdf_customer_courier_score')) {
 
 		$body = wp_remote_retrieve_body($response);
 		$order_info = json_decode($body, true);
-		$success_ratio = stdf_calculate_success_rate($order_info['total_parcels'],$order_info['total_delivered']);
-		update_post_meta( $order_id, 'stdf_success_ratio', $success_ratio );
+
+
+		if (isset($order_info['status']) && (string) $order_info['status'] === '401') {
+
+			$order_info['authorization'] = $order_info['status'];
+			return $order_info;
+		}
+
+
+		$total_parcels   = isset($order_info['total_parcels']) ? (int) $order_info['total_parcels'] : 0;
+		$total_delivered = isset($order_info['total_delivered']) ? (int) $order_info['total_delivered'] : 0;
+
+		$success_ratio = stdf_calculate_success_rate($total_parcels, $total_delivered);
+
+		update_post_meta($order_id, 'stdf_success_ratio', $success_ratio);
 
 		$order_info['success_ratio'] = $success_ratio;
-
 
 		return $order_info;
 	}

@@ -53,7 +53,7 @@ if (!class_exists('STDF_Hooks')) {
 		{ ?>
 
 			<div id="stdf-customer-info-modal">
-				<h2><?php echo esc_html__('📊 SteadFast Success Rate', 'steadfast-api'); ?></h2>
+				<h2><?php // echo esc_html__('📊 SteadFast Success Rate', 'steadfast-api'); ?></h2>
 				<div id="stdf-customer-info-content">
 				
 				</div>
