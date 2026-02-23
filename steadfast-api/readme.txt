@@ -4,10 +4,10 @@ Donate link: https://steadfast.com.bd/
 Plugin URI: https://wordpress.org/plugins/steadfast-api/
 Tags: steadfast, steadfast courier, packly, steadfast api
 Requires at least: 6.5.5
-Tested up to: 6.9
+Tested up to: 6.9.1
 Requires PHP: 8.0
-Stable tag: 1.0.5
-Tested up to WooCommerce: 10.3.5
+Stable tag: 1.0.6
+Tested up to WooCommerce: 10.5.2
 Text Domain: steadfast-api
 License: GPLv2
 
@@ -92,6 +92,9 @@ Yes, the SteadFast courier API extension module is dependent on WooCommerce.
 
 
 == Changelog ==
+
+= 1.0.6 =  
+* Compatibility update for WordPress & WooCommerce version.
 
 = 1.0.5 =  
 * Fix css loading issue. 
