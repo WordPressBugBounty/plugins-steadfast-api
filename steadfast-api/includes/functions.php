@@ -60,9 +60,9 @@ if (!function_exists('send_order_to_steadfast_api')) {
 				'api-key' => sanitize_text_field($api_key),
 				'secret-key' => sanitize_text_field($api_secret_key),
 			),
-			'timeout' => 45,
+			'timeout' => 30,
 			'redirection' => 5,
-			'httpversion' => '1.0',
+			'httpversion' => '1.1',
 			'body' => wp_json_encode($body),
 			'cookies' => array()
 		);

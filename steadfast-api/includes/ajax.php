@@ -84,7 +84,7 @@ if (!class_exists('STDF_Ajax')) {
                     $data = 'unauthorized';
                 } else if ($response !== 'failed') {
                     $data = $response['current_balance'];
-                } else {
+                }else {
                     $data = 'failed';
                 }
 
