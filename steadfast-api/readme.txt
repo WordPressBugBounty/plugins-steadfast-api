@@ -6,7 +6,7 @@ Tags: steadfast, steadfast courier, packly, steadfast api
 Requires at least: 6.5.5
 Tested up to: 7.0
 Requires PHP: 8.0
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 Tested up to WooCommerce: 10.5.2
 Text Domain: steadfast-api
 License: GPLv2
@@ -92,6 +92,20 @@ Yes, the SteadFast courier API extension module is dependent on WooCommerce.
 
 
 == Changelog ==
+
+= 1.0.8 =  
+* Modern UI and Styling Overhaul of settings, dashboard, and WooCommerce order list tables.
+* Fixed authorization validation, empty credentials checks, and phone number parsing bugs.
+* Enqueued premium Google Font 'Outfit' directly in PHP.
+* Upgraded SteadFast dashboard with dynamic SVG icons, a dynamic real-time AJAX connection checker, and a responsive Live Order Analytics panel.
+* Implemented secure REST API webhook route and token authentication to receive real-time parcel delivery status updates.
+* Implemented AJAX settings save without page reload, including dynamic business logo uploads.
+* Repositioned and stylized settings save progress to float in the top-right corner as a glassmorphism toast.
+* Restyled custom toggle switches to override WordPress margin defaults.
+* Implemented dynamic tab switching (Dashboard / API Settings) without page reload.
+* Resolved order list layout overlap bugs and aligned the Amount input field and Print button to uniform sizes.
+* Overhauled SteadFast success rate courier modal UI with vector SVGs and dynamic progress cards.
+* Implemented credentials view/hide toggling (eye icon) for API Key and Secret Key fields.
 
 = 1.0.7 =  
 * Compatibility update for WordPress & WooCommerce version.

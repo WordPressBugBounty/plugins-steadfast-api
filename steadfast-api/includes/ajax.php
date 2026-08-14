@@ -15,6 +15,8 @@ if (!class_exists('STDF_Ajax')) {
             add_action('wp_ajax_std_current_balance', array($this, 'check_current_balance'));
             add_action('wp_ajax_input_amount', array($this, 'input_custom_amount'));
             add_action('wp_ajax_send_to_steadfast', array($this, 'send_to_steadfast'));
+            add_action('wp_ajax_save_steadfast_settings', array($this, 'save_steadfast_settings'));
+            add_action('wp_ajax_stdf_test_connection', array($this, 'test_api_connection'));
         }
 
         /**
@@ -32,7 +34,38 @@ if (!class_exists('STDF_Ajax')) {
                     $send = send_order_to_steadfast_api($order_id);
                     if ($send == 'success') {
                         update_post_meta($order_id, 'steadfast_is_sent', 'yes');
-                        wp_send_json_success(['message' => esc_html__('success', 'steadfast-api')]);
+                        
+                        $consignment_id = get_post_meta($order_id, 'steadfast_consignment_id', true);
+                        
+                        // Build site URL for print details
+                        $site_url = add_query_arg(
+                            array(
+                                'order_id'       => $order_id,
+                                'consignment_id' => $consignment_id,
+                            ),
+                            admin_url('/index.php?page=stdf-invoice')
+                        );
+                        $nonce_url = wp_nonce_url($site_url, 'stdf_print_order_nonce');
+                        $print_html = sprintf('<div><a class="std-print-order-detail" target="_blank" href="%s">%s</a></div>', esc_url(urldecode($nonce_url)), esc_html__('Print', 'steadfast-api'));
+                        
+                        // Build delivery status HTML
+                        $status_nonce = wp_create_nonce('stdf_delivery_status_nonce');
+                        ob_start();
+                        ?>
+                        <div class="std-order-status">
+                            <button id="std-delivery-status" data-stdf-status="<?php echo esc_attr($status_nonce); ?>" data-order-id="<?php echo esc_attr($order_id); ?>" data-consignment-id="<?php echo esc_attr($consignment_id); ?>"><?php echo esc_html__('Check', 'steadfast-api'); ?></button>
+                            <div id="std-re-check-delivery-status" class="hidden dashicons dashicons-image-rotate" data-stdf-status="<?php echo esc_attr($status_nonce); ?>" data-order-id="<?php echo esc_attr($order_id); ?>" data-consignment-id="<?php echo esc_attr($consignment_id); ?>"></div>
+                            <span id="std-current-status" data-status-id="<?php echo esc_attr($order_id); ?>" class="hidden"></span>
+                        </div>
+                        <?php
+                        $delivery_html = ob_get_clean();
+
+                        wp_send_json_success([
+                            'message'        => esc_html__('success', 'steadfast-api'),
+                            'consignment_id' => esc_html($consignment_id),
+                            'print_html'     => $print_html,
+                            'delivery_html'  => $delivery_html
+                        ]);
                     } else if ($send == 'unauthorized') {
                         wp_send_json_error(['message' => esc_html__('unauthorized', 'steadfast-api')]);
                     } else {
@@ -141,6 +174,91 @@ if (!class_exists('STDF_Ajax')) {
             $order_info = stdf_customer_courier_score($mobile_number,$order_id);
 
             wp_send_json_success($order_info);
+        }
+
+        public function save_steadfast_settings()
+        {
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(['message' => esc_html__('Unauthorized capability.', 'steadfast-api')]);
+            }
+
+            $nonce = isset($_POST['stdf_settings_nonce_field']) ? sanitize_text_field(wp_unslash($_POST['stdf_settings_nonce_field'])) : '';
+            if (!$nonce || !wp_verify_nonce($nonce, 'stdf_settings_nonce')) {
+                wp_send_json_error(['message' => esc_html__('Security verification failed.', 'steadfast-api')]);
+            }
+
+            $text_fields = array(
+                'api_settings_tab_api_key',
+                'api_settings_tab_api_secret_key',
+                'stdf_business_name',
+                'stdf_business_address',
+                'stdf_business_email',
+                'stdf_business_number',
+                'stdf_term_condition'
+            );
+
+            foreach ($text_fields as $field) {
+                if (isset($_POST[$field])) {
+                    $val = sanitize_text_field(wp_unslash($_POST[$field]));
+                    update_option($field, $val);
+                }
+            }
+
+            $checkbox_fields = array(
+                'stdf_settings_tab_checkbox',
+                'stdf_settings_tab_notes'
+            );
+
+            foreach ($checkbox_fields as $field) {
+                $val = isset($_POST[$field]) && $_POST[$field] === 'yes' ? 'yes' : '';
+                update_option($field, $val);
+            }
+
+            $logo_url = '';
+            if (!empty($_FILES) && isset($_FILES['stdf_business_logo']) && $_FILES['stdf_business_logo']['size'] > 0) {
+                if (!function_exists('wp_handle_upload')) {
+                    require_once ABSPATH . 'wp-admin/includes/file.php';
+                }
+
+                $uploaded_image = wp_handle_upload($_FILES['stdf_business_logo'], array('test_form' => false));
+                if (isset($uploaded_image['url'])) {
+                    $logo_url = $uploaded_image['url'];
+                    update_option('stdf_business_logo', $logo_url);
+                } elseif (isset($uploaded_image['error'])) {
+                    wp_send_json_error(['message' => $uploaded_image['error']]);
+                }
+            }
+
+            if (empty($logo_url)) {
+                $logo_url = get_option('stdf_business_logo', '');
+            }
+
+            wp_send_json_success([
+                'message' => esc_html__('Settings saved successfully!', 'steadfast-api'),
+                'logo_url' => $logo_url
+            ]);
+        }
+
+        public function test_api_connection()
+        {
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(['message' => esc_html__('Unauthorized capability.', 'steadfast-api')]);
+            }
+
+            $api_key = trim(get_option('api_settings_tab_api_key', ''));
+            $api_secret = trim(get_option('api_settings_tab_api_secret_key', ''));
+
+            if (empty($api_key) || empty($api_secret)) {
+                wp_send_json_error(['message' => esc_html__('Credentials Missing', 'steadfast-api')]);
+            }
+
+            $balance = stdf_check_current_balance('check-yes');
+
+            if ($balance === 'unauthorized' || $balance === 'failed' || is_wp_error($balance)) {
+                wp_send_json_error(['message' => esc_html__('Connection Inactive', 'steadfast-api')]);
+            }
+
+            wp_send_json_success(['message' => esc_html__('Connection Active', 'steadfast-api')]);
         }
 
         public static function instance()

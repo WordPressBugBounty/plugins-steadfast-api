@@ -17,8 +17,8 @@ if (!function_exists('send_order_to_steadfast_api')) {
 	{
 
 		$checkbox = get_option('stdf_settings_tab_checkbox', false);
-		$api_secret_key = get_option('api_settings_tab_api_secret_key', false);
-		$api_key = get_option('api_settings_tab_api_key', false);
+		$api_secret_key = trim(get_option('api_settings_tab_api_secret_key', ''));
+		$api_key = trim(get_option('api_settings_tab_api_key', ''));
 		$api_notes = get_option('stdf_settings_tab_notes', false);
 
 		$order = new WC_Order($order_id);
@@ -38,10 +38,19 @@ if (!function_exists('send_order_to_steadfast_api')) {
 		$order_note = $api_notes == 'yes' ? $order->get_customer_note() : '';
 
 		//Check Customer Valid Phone Number.
-		$n = 10;
-		$number = strlen($order_billing_phone) - $n;
-		$phone = substr($order_billing_phone, $number);
-		$customer_phone = '0' . $phone;
+		$clean_phone = preg_replace('/[^0-9]/', '', $order_billing_phone);
+		if (strlen($clean_phone) === 11 && substr($clean_phone, 0, 1) === '0') {
+			$customer_phone = $clean_phone;
+		} elseif (strlen($clean_phone) === 13 && substr($clean_phone, 0, 3) === '880') {
+			$customer_phone = '0' . substr($clean_phone, 3);
+		} elseif (strlen($clean_phone) === 10 && substr($clean_phone, 0, 1) !== '0') {
+			$customer_phone = '0' . $clean_phone;
+		} else {
+			$n = 10;
+			$number = strlen($clean_phone) - $n;
+			$phone = substr($clean_phone, max(0, $number));
+			$customer_phone = '0' . $phone;
+		}
 
 		$recipient_address = $order_billing_address . ',' . $order_shipping_city . '-' . $order_shipping_postcode;
 		$body = array(
@@ -67,9 +76,20 @@ if (!function_exists('send_order_to_steadfast_api')) {
 			'cookies' => array()
 		);
 		if ($checkbox == 'yes') {
+			if (empty($api_key) || empty($api_secret_key)) {
+				return esc_html__('API credentials are empty. Please configure them in SteadFast settings.', 'steadfast-api');
+			}
 			$response = wp_remote_post('https://portal.packzy.com/api/v1/create_order', $args);
 
+			if (is_wp_error($response)) {
+				return $response->get_error_message();
+			}
+
 			$request = json_decode(wp_remote_retrieve_body($response), true);
+
+			if (!is_array($request)) {
+				return esc_html__('Invalid API response', 'steadfast-api');
+			}
 
 			if (isset($request['status']) && $request['status'] == 400 && isset($request['errors'])) {
 				$errors = $request['errors'];
@@ -81,11 +101,12 @@ if (!function_exists('send_order_to_steadfast_api')) {
 				}
 			}
 
-			if ($request['status'] == 200) {
-				$consignment_id = $request['consignment']['consignment_id'];
-				update_post_meta($order_id, 'steadfast_consignment_id', $consignment_id);
-
-				return esc_html__('success', 'steadfast-api');
+			if (isset($request['status']) && $request['status'] == 200) {
+				$consignment_id = isset($request['consignment']['consignment_id']) ? $request['consignment']['consignment_id'] : '';
+				if (!empty($consignment_id)) {
+					update_post_meta($order_id, 'steadfast_consignment_id', $consignment_id);
+					return esc_html__('success', 'steadfast-api');
+				}
 			}
 		}
 
@@ -252,8 +273,8 @@ if (! function_exists('stdf_get_status_by_consignment_id')) {
 	{
 
 		$checkbox       = get_option('stdf_settings_tab_checkbox', false);
-		$api_secret_key = get_option('api_settings_tab_api_secret_key', false);
-		$api_key        = get_option('api_settings_tab_api_key', false);
+		$api_secret_key = trim(get_option('api_settings_tab_api_secret_key', ''));
+		$api_key        = trim(get_option('api_settings_tab_api_key', ''));
 
 		$args = array(
 			'method'      => 'GET',
@@ -269,10 +290,17 @@ if (! function_exists('stdf_get_status_by_consignment_id')) {
 		);
 
 		if ($checkbox == 'yes') {
+			if (empty($api_key) || empty($api_secret_key)) {
+				return 'unauthorized';
+			}
 			$response = wp_remote_get('https://portal.packzy.com/api/v1/status_by_cid/' . $consignment_id, $args);
 
+			if (is_wp_error($response)) {
+				return 'failed';
+			}
+
 			$request = json_decode(wp_remote_retrieve_body($response), true);
-			if ($request['status'] == '200') {
+			if (is_array($request) && isset($request['status']) && $request['status'] == '200') {
 				return $request;
 			} else {
 				return 'unauthorized';
@@ -422,8 +450,8 @@ if (!function_exists('stdf_customer_courier_score')) {
 	function stdf_customer_courier_score($phone_number,$order_id)
 	{
 
-		$api_secret_key = get_option('api_settings_tab_api_secret_key', false);
-		$api_key        = get_option('api_settings_tab_api_key', false);
+		$api_secret_key = trim(get_option('api_settings_tab_api_secret_key', ''));
+		$api_key        = trim(get_option('api_settings_tab_api_key', ''));
 
 		$args = array(
 			'method'      => 'GET',
@@ -441,6 +469,10 @@ if (!function_exists('stdf_customer_courier_score')) {
 		$phone_number = preg_replace('/[^0-9]/', '', $phone_number);
 		$url = "https://portal.packzy.com/api/v1/fraud_check/" . $phone_number;
 
+		if (empty($api_key) || empty($api_secret_key)) {
+			return array('error' => 'API credentials are empty. Please configure them in SteadFast settings.');
+		}
+
 		$response = wp_remote_get($url, $args);
 
 		if (is_wp_error($response)) {
@@ -449,6 +481,10 @@ if (!function_exists('stdf_customer_courier_score')) {
 
 		$body = wp_remote_retrieve_body($response);
 		$order_info = json_decode($body, true);
+
+		if (!is_array($order_info)) {
+			return array('error' => 'Invalid API Response');
+		}
 
 
 		if (isset($order_info['status']) && (string) $order_info['status'] === '401') {
@@ -481,8 +517,8 @@ if (!function_exists('stdf_check_current_balance')) {
 		}
 
 		$checkbox       = get_option('stdf_settings_tab_checkbox', false);
-		$api_secret_key = get_option('api_settings_tab_api_secret_key', false);
-		$api_key        = get_option('api_settings_tab_api_key', false);
+		$api_secret_key = trim(get_option('api_settings_tab_api_secret_key', ''));
+		$api_key        = trim(get_option('api_settings_tab_api_key', ''));
 
 		$args = array(
 			'method'      => 'GET',
@@ -497,10 +533,17 @@ if (!function_exists('stdf_check_current_balance')) {
 			'cookies'     => array()
 		);
 		if ($checkbox == 'yes') {
+			if (empty($api_key) || empty($api_secret_key)) {
+				return 'unauthorized';
+			}
 			$response = wp_remote_get('https://portal.packzy.com/api/v1/get_balance', $args);
 
+			if (is_wp_error($response)) {
+				return 'failed';
+			}
+
 			$request = json_decode(wp_remote_retrieve_body($response), true);
-			if ($request['status'] == '200') {
+			if (is_array($request) && isset($request['status']) && $request['status'] == '200') {
 				return $request;
 			} else {
 				return 'unauthorized';
@@ -516,5 +559,113 @@ if(!function_exists('stdf_calculate_success_rate')){
 function stdf_calculate_success_rate($total, $delivered)
     {
         return ($total > 0) ? round(($delivered / max(1, $total)) * 100, 2).'%' : '00.0%';
+	}
+}
+
+if (! function_exists('stdf_get_order_analytics')) {
+	/**
+	 * Retrieve order booking and delivery status analytics for SteadFast.
+	 * Supports both standard Custom Post Type (CPT) and High-Performance Order Storage (HPOS).
+	 *
+	 * @return array
+	 */
+	function stdf_get_order_analytics()
+	{
+		global $wpdb;
+
+		$total_sent = 0;
+		$delivered  = 0;
+		$cancelled  = 0;
+		$pending    = 0;
+
+		// 1. Query classic postmeta table (CPT or synced HPOS)
+		$ids_postmeta = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT DISTINCT post_id FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %s",
+				'steadfast_is_sent',
+				'yes'
+			)
+		);
+		$ids_postmeta = is_array($ids_postmeta) ? array_map('intval', $ids_postmeta) : array();
+
+		// 2. Query wc_orders_meta table (HPOS) if the table exists
+		$ids_hpos = array();
+		$hpos_table = $wpdb->prefix . 'wc_orders_meta';
+		if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $hpos_table)) === $hpos_table) {
+			$hpos_ids = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT DISTINCT order_id FROM {$hpos_table} WHERE meta_key = %s AND meta_value = %s",
+					'steadfast_is_sent',
+					'yes'
+				)
+			);
+			$ids_hpos = is_array($hpos_ids) ? array_map('intval', $hpos_ids) : array();
+		}
+
+		// Merge and unique the IDs from both tables
+		$sent_orders = array_unique(array_merge($ids_postmeta, $ids_hpos));
+		$total_sent = count($sent_orders);
+
+		if ($total_sent > 0) {
+			foreach ($sent_orders as $order_id) {
+				// Try fetching metadata from multiple fallback sources to guarantee 100% resolution
+				$status = '';
+				
+				// Source A: WC Order meta (Native WooCommerce)
+				if (function_exists('wc_get_order')) {
+					$order = wc_get_order($order_id);
+					if ($order) {
+						$status = $order->get_meta('stdf_delivery_status', true);
+					}
+				}
+
+				// Source B: Standard get_post_meta fallback
+				if (empty($status)) {
+					$status = get_post_meta($order_id, 'stdf_delivery_status', true);
+				}
+
+				// Source C: Direct DB wp_postmeta query fallback
+				if (empty($status)) {
+					$status = $wpdb->get_var($wpdb->prepare(
+						"SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s LIMIT 1",
+						$order_id,
+						'stdf_delivery_status'
+					));
+				}
+
+				// Source D: Direct DB wp_wc_orders_meta query fallback
+				if (empty($status) && $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $hpos_table)) === $hpos_table) {
+					$status = $wpdb->get_var($wpdb->prepare(
+						"SELECT meta_value FROM {$hpos_table} WHERE order_id = %d AND meta_key = %s LIMIT 1",
+						$order_id,
+						'stdf_delivery_status'
+					));
+				}
+
+				$status = strtolower(trim((string)$status));
+
+				if ($status === 'delivered') {
+					$delivered++;
+				} elseif ($status === 'cancelled') {
+					$cancelled++;
+				} else {
+					$pending++;
+				}
+			}
+		}
+
+		$delivered_percent = $total_sent > 0 ? round(($delivered / $total_sent) * 100) : 0;
+		$cancelled_percent = $total_sent > 0 ? round(($cancelled / $total_sent) * 100) : 0;
+		$pending_percent   = $total_sent > 0 ? round(($pending / $total_sent) * 100) : 0;
+
+		return array(
+			'total_sent'        => $total_sent,
+			'delivered'         => $delivered,
+			'cancelled'         => $cancelled,
+			'pending'           => $pending,
+			'delivered_percent' => $delivered_percent,
+			'cancelled_percent' => $cancelled_percent,
+			'pending_percent'   => $pending_percent
+		);
 	}
 }

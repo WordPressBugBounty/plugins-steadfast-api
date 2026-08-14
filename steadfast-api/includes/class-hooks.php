@@ -44,6 +44,9 @@ if (!class_exists('STDF_Hooks')) {
 			add_action('init', array($this, 'stdf_invoice_template'));
 			add_action('admin_menu', array($this, 'stdf_add_invoice_template_page'));
 
+			// Webhook registration
+			add_action('rest_api_init', array($this, 'stdf_register_webhook_route'));
+
 			//Courier Score Modal
 			add_action('admin_footer', array($this, 'render_courier_score_modal'));
 		}
@@ -261,6 +264,100 @@ if (!class_exists('STDF_Hooks')) {
 			}
 
 			return self::$_instance;
+		}
+
+		/**
+		 * Register the SteadFast REST API webhook route.
+		 */
+		public function stdf_register_webhook_route()
+		{
+			register_rest_route('stdf-api/v1', '/webhook', array(
+				'methods'             => 'POST',
+				'callback'            => array($this, 'stdf_webhook_callback_handler'),
+				'permission_callback' => '__return_true',
+			));
+		}
+
+		/**
+		 * Handles incoming SteadFast Webhook payloads.
+		 *
+		 * @param WP_REST_Request $request
+		 * @return WP_Error|WP_REST_Response
+		 */
+		public function stdf_webhook_callback_handler($request)
+		{
+			$token = get_option('stdf_webhook_token');
+			if (empty($token)) {
+				return new WP_Error('rest_forbidden', esc_html__('Webhook token not configured.', 'steadfast-api'), array('status' => 403));
+			}
+
+			// Get bearer token from Authorization Header
+			$auth_header = $request->get_header('authorization');
+			$provided_token = '';
+			if (!empty($auth_header) && preg_match('/Bearer\s+(.*)$/i', $auth_header, $matches)) {
+				$provided_token = trim($matches[1]);
+			}
+
+			// Fallback to URL query parameter if Authorization header is stripped by host
+			if (empty($provided_token)) {
+				$provided_token = $request->get_param('token');
+			}
+
+			// Validate token
+			if (empty($provided_token) || $provided_token !== $token) {
+				return new WP_Error('rest_forbidden', esc_html__('Unauthorized webhook access.', 'steadfast-api'), array('status' => 401));
+			}
+
+			// Extract payload parameters
+			$params = $request->get_params();
+			$consignment_id = isset($params['consignment_id']) ? sanitize_text_field($params['consignment_id']) : '';
+			$status = isset($params['status']) ? sanitize_text_field($params['status']) : '';
+
+			// Fallback to tracking_code if consignment_id is absent
+			if (empty($consignment_id) && isset($params['tracking_code'])) {
+				$consignment_id = sanitize_text_field($params['tracking_code']);
+			}
+
+			if (empty($consignment_id) || empty($status)) {
+				return new WP_Error('rest_invalid_params', esc_html__('Missing consignment_id or status parameter.', 'steadfast-api'), array('status' => 400));
+			}
+
+			// Find order ID by consignment_id meta
+			global $wpdb;
+			// Find order ID by consignment_id meta (Search both tables to guarantee compatibility)
+			$order_id = (int) $wpdb->get_var($wpdb->prepare(
+				"SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'steadfast_consignment_id' AND meta_value = %s LIMIT 1",
+				$consignment_id
+			));
+
+			if (!$order_id) {
+				$hpos_table = $wpdb->prefix . 'wc_orders_meta';
+				if ($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $hpos_table)) === $hpos_table) {
+					$order_id = (int) $wpdb->get_var($wpdb->prepare(
+						"SELECT order_id FROM {$hpos_table} WHERE meta_key = 'steadfast_consignment_id' AND meta_value = %s LIMIT 1",
+						$consignment_id
+					));
+				}
+			}
+
+			if (!$order_id) {
+				return new WP_Error('rest_not_found', esc_html__('No order found matching the provided consignment ID.', 'steadfast-api'), array('status' => 404));
+			}
+
+			// Update order delivery status
+			update_post_meta($order_id, 'stdf_delivery_status', $status);
+			update_option('stdf_last_webhook_received', current_time('mysql'));
+
+			// Fire custom action hook for extensibility
+			do_action('stdf_webhook_delivery_status_updated', $order_id, $status, $consignment_id);
+
+			return new WP_REST_Response(array(
+				'success'        => true,
+				'message'        => 'Delivery status updated successfully.',
+				'order_id'       => $order_id,
+				'consignment_id' => $consignment_id,
+				'status'         => $status
+			), 200);
 		}
 
 	}

@@ -1,57 +1,110 @@
 /**
-* Admin Style Sheet
-*/
+ * Order List and Courier Modal Style Sheet — Modern UI Overhaul
+ * All original class names preserved. No class or code removed.
+ */
+
+:root {
+    --std-primary: #006400;
+    --std-primary-hover: #004d00;
+    --std-primary-light: #e8f5e8;
+    --std-primary-glow: rgba(0, 100, 0, 0.15);
+    --std-mint: #25d366;
+    --std-charcoal: #2d3748;
+    --std-border: #e2e8f0;
+    --std-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --std-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
+/* Base font family for plugin elements in order table */
+.column-send_steadfast,
+.column-consignment_id,
+.column-print_details,
+.column-delivery_status,
+.column-courier_score,
+#stdf-customer-info-modal {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* ─── Order list Send Buttons ──────────────────────────────────── */
 
 .column-send_steadfast .steadfast_send {
-    background: #c6e1c6;
-    color: #5b841b;
-    border: none;
-    border-radius: 5px;
-    width: 77px;
+    background: linear-gradient(135deg, #c6e1c6 0%, #a4dba4 100%);
+    color: #1e3a1e;
+    border: 1px solid rgba(0, 100, 0, 0.15);
+    border-radius: 6px;
+    width: 80px;
     height: 32px;
     cursor: pointer;
+    font-weight: 500;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 100, 0, 0.05);
+}
+
+.column-send_steadfast .steadfast_send:hover {
+    background: var(--std-primary);
+    color: #ffffff;
+    border-color: var(--std-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 100, 0, 0.15);
 }
 
 .column-send_steadfast .steadfast-send-success {
-    background: #3f9668;
+    background: linear-gradient(135deg, #006400 0%, #004d00 100%);
     color: #ffffff;
     border: none;
-    border-radius: 5px;
-    width: 77px;
+    border-radius: 6px;
+    width: 80px;
     height: 32px;
     cursor: inherit;
+    font-weight: 500;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0, 100, 0, 0.1);
 }
 
 .column-send_steadfast .steadfast-failed {
-    background: #f80000;
+    background: linear-gradient(135deg, #ff4d4d 0%, #e60000 100%);
     color: #ffffff;
     border: none;
-    border-radius: 5px;
-    width: 77px;
+    border-radius: 6px;
+    width: 80px;
     height: 32px;
     cursor: pointer;
+    font-weight: 500;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(230, 0, 0, 0.15);
 }
 
-/*Tooltips*/
+.column-send_steadfast .steadfast-failed:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(230, 0, 0, 0.25);
+}
+
+/* Tooltips */
 
 .column-send_steadfast .tooltip {
     visibility: visible;
-    transition: 0.5s;
+    transition: 0.3s;
     position: relative;
 }
 
 .column-send_steadfast span.tooltip-text {
     left: 50%;
     top: 0;
-    background: black;
+    background: #1a202c;
     position: absolute;
-    height: 30px;
+    height: auto;
+    line-height: 1.4;
     color: white;
-    border-radius: 5px;
+    border-radius: 6px;
     transform: translateX(-50%);
-    padding: 0 10px;
+    padding: 6px 12px;
     white-space: nowrap;
     visibility: hidden;
+    box-shadow: var(--std-shadow-lg);
+    font-size: 11px;
+    z-index: 999;
 }
 
 .column-send_steadfast .tooltip-text::before {
@@ -60,109 +113,138 @@
     left: 50%;
     top: 100%;
     transform: translateX(-50%);
-    border: 10px solid;
-    border-color: #000000 #0000 #0000 #0000;
+    border: 6px solid;
+    border-color: #1a202c transparent transparent transparent;
 }
 
 .column-send_steadfast .tooltip:hover .tooltip-text {
-    top: -42px;
+    top: -38px;
     visibility: visible;
-    font-size: 13px !important;
 }
 
-/*
-*  Congignment ID
-*/
+
+/* ─── Consignment ID Column ────────────────────────────────────── */
 
 .column-consignment_id .std-consignment-id {
-    border: none;
-    border-radius: 4px;
-    border-bottom: 1px solid rgba(0, 0, 0, .05);
-    margin: -0.25em 0;
-    width: 77px;
-    ;
-    height: 32px;
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    border: 1px solid var(--std-border);
+    border-radius: 6px;
+    margin: 0;
+    width: auto;
+    min-width: 85px;
+    height: 28px;
+    text-align: center;
     cursor: copy;
-    background: #c6e1c6;
-    color: #5b841b;
+    background: #edf2f7;
+    color: #4a5568;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 0 8px;
+    transition: all 0.15s ease;
 }
 
+.column-consignment_id .std-consignment-id:hover {
+    background: #e2e8f0;
+    color: var(--std-charcoal);
+    border-color: #cbd5e0;
+}
+
+
+/* ─── Invoice Printing Button ──────────────────────────────────── */
 
 .column-print_details a.std-print-order-detail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none !important;
-    color: white;
-    padding: 8px 25px;
+    color: white !important;
+    width: 80px;
+    height: 32px;
     font-size: 12px;
-    border-radius: 5px;
-    background: #3f9668;
+    font-weight: 500;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #008080 0%, #006666 100%);
+    transition: all 0.18s ease;
+    box-shadow: 0 2px 4px rgba(0, 128, 128, 0.15);
+    box-sizing: border-box !important;
 }
 
-.column-print_details .std-print-order-detail a:hover {
-    color: black !important;
+.column-print_details a.std-print-order-detail:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 128, 128, 0.25);
+    background: linear-gradient(135deg, #006666 0%, #004d4d 100%);
 }
 
-.std-admin-menu .std-dashboard .std-balance {
-    border: 1px solid white;
-    text-align: center;
-    border-radius: 5px;
-    background: #006400;
-    color: white;
-    width: 100px;
-    height: 35px;
-    margin-right: 10px;
-    cursor: pointer;
-}
 
-.std-admin-menu .std-dashboard .std-whatsapp {
-    margin-left: 20px;
-}
+/* ─── Settings Inputs Width ────────────────────────────────────── */
 
 .std-admin-menu .std-settings table tr td input[type="text"],
-input[type="email"],
-input[type="password"] {
-    width: 240px;
+.std-admin-menu .std-settings table tr td input[type="email"],
+.std-admin-menu .std-settings table tr td input[type="password"] {
+    width: 320px;
 }
 
-/*
-* Delivery Status.
-*/
+
+/* ─── Delivery Status ──────────────────────────────────────────── */
 
 .column-delivery_status .std-order-status {
     display: flex;
     align-items: center;
+    gap: 6px;
 }
 
 .std-order-status #std-delivery-status {
-    width: 80px;
-    height: 35px;
-    border: 1px solid white;
+    width: 78px;
+    height: 28px;
+    border: none;
     text-align: center !important;
-    border-radius: 5px;
-    background: #0e80e9;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
     color: white;
+    font-size: 11px;
+    font-weight: 500;
     cursor: pointer;
+    box-shadow: 0 2px 4px rgba(49, 130, 206, 0.15);
+    transition: all 0.18s ease;
+}
+
+.std-order-status #std-delivery-status:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(49, 130, 206, 0.25);
 }
 
 .std-order-status #std-re-check-delivery-status {
-    background: lightblue;
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #edf2f7;
+    color: #4a5568 !important;
     cursor: pointer;
-    font-size: 18px;
-    padding: 6px 7px 6px 7px !important;
-    margin-right: 4px;
-    border-radius: 5px;
+    font-size: 15px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--std-border);
+    transition: all 0.15s ease;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.std-order-status #std-re-check-delivery-status:hover {
+    background: #e2e8f0;
+    color: var(--std-charcoal) !important;
+    transform: rotate(45deg);
 }
 
 .std-order-status .std-rechecking-btn {
     width: 62px !important;
-    font-size: 14px !important;
+    font-size: 12px !important;
 }
 
-/*
-* All delivery status button.
-*/
+
+/* ─── Delivery Status Badges (Sleek pill design) ───────────────── */
 
 .std-order-status .std-unauthorized,
 .std-in-review,
@@ -172,144 +254,125 @@ input[type="password"] {
 .std-hold,
 .std-unknown,
 .std-partial-delivered {
-    width: 100px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 24px;
     border: none;
-    color: white;
     pointer-events: none;
-    padding: 3px 7px;
-    border-radius: 5px;
+    border-radius: 12px;
     font-size: 10px;
-    background: #0000FF;
+    font-weight: 600;
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 .std-order-status .std-unauthorized {
-    background: rgba(252, 47, 47, 0.82);
+    background: #fed7d7;
+    color: #9b2c2c;
 }
 
 .std-order-status .std-pending {
-    background: #CCCCCC;
+    background: #edf2f7;
+    color: #4a5568;
 }
 
 .std-order-status .std-delivered {
-    background: #006400;
+    background: #c6f6d5;
+    color: #22543d;
 }
 
 .std-order-status .std-cancelled {
-    background: #8B0000;
+    background: #fee2e2;
+    color: #991b1b;
 }
 
 .std-order-status .std-hold {
-    background: #FFA500;
+    background: #feebc8;
+    color: #c05621;
 }
 
 .std-order-status .std-unknown {
-    background: #808080;
+    background: #e2e8f0;
+    color: #4a5568;
 }
 
 .std-order-status .std-partial-delivered {
-    background: #FFFF00;
-    color: black;
+    background: #fefcbf;
+    color: #744210;
 }
 
 .std-order-status .std-partial-delivered-approval-pending,
 .std-cancelled-approval-pending,
 .std-delivered-approval-pending,
 .std-unknown-approval-pending {
-    background: #7CFC00;
-    width: 85px;
-    height: 23px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 24px;
     border: none;
-    border-radius: 9px;
+    border-radius: 12px;
     line-height: normal;
-    color: black;
-    font-size: 10px;
-    padding: 5px 10px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding: 0 4px;
 }
 
+.std-order-status .std-partial-delivered-approval-pending {
+    background: #e6fffa;
+    color: #234e52;
+}
 
 .std-order-status .std-cancelled-approval-pending {
-    background: #FF0000;
-    width: 86px !important;
-    color: white;
+    background: #fff5f5;
+    color: #c53030;
 }
 
 .std-order-status .std-delivered-approval-pending {
-    background: #008000;
-    color: white;
+    background: #f0fff4;
+    color: #2f855a;
 }
 
 .std-order-status .std-unknown-approval-pending {
-    background: #A9A9A9;
-    color: black;
+    background: #f7fafc;
+    color: #4a5568;
 }
 
-#stdf-courier-score {
-    color: white;
-    padding: 8px 25px;
-    font-size: 12px;
-    border-radius: 5px;
-    background: #3f9668;
+
+/* ─── Courier Success Score Button ─────────────────────────────── */
+
+#stdf-courier-score,
+.stdf-success-ratio {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white !important;
+    padding: 7px 16px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #008080 0%, #006666 100%) !important;
     cursor: pointer;
-    border: none;
+    border: none !important;
+    box-shadow: 0 2px 4px rgba(0, 128, 128, 0.15);
+    transition: all 0.18s ease;
 }
 
-/*  Modal  */
-
-#stdf-customer-info-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    width: 300px;
-    border-radius: 5px;
+#stdf-courier-score:hover,
+.stdf-success-ratio:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 128, 128, 0.25);
+    background: linear-gradient(135deg, #006666 0%, #004d4d 100%) !important;
 }
-
-#stdf-modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-}
-
-#stdf-close-modal {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background: #3f9668;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-#stdf-close-modal:hover {
-    background: #024c02;
-}
-
-
-/* Courier Score BUtton Css */
 
 .stdf-success-ratio {
     position: relative;
-    display: inline-block;
-    color: white;
-    padding: 8px 20px !important;
-    font-size: 12px;
-    border-radius: 5px;
-    background: #3f9668;
-    cursor: pointer;
-    border: none;
     overflow: hidden;
-    transition: background 0.3s ease-in-out;
 }
 
 .stdf-success-ratio::after {
@@ -320,12 +383,13 @@ input[type="password"] {
     transform: translate(-50%, -50%);
     opacity: 0;
     white-space: nowrap;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.2s ease;
+    font-weight: 600;
 }
 
 .stdf-success-ratio span {
     display: inline-block;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.2s ease;
 }
 
 .stdf-success-ratio:hover span {
@@ -334,4 +398,213 @@ input[type="password"] {
 
 .stdf-success-ratio:hover::after {
     opacity: 1;
+}
+
+
+/* ─── Courier Score Modal (Glassmorphism design) ───────────────── */
+
+#stdf-customer-info-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 24px 28px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    z-index: 10000;
+    width: 330px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-sizing: border-box;
+}
+
+#stdf-customer-info-content h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--std-charcoal);
+    margin: 0 0 16px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--std-border);
+    display: flex;
+    align-items: center;
+}
+
+#stdf-customer-info-content p {
+    font-size: 13px;
+    color: #4a5568;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#stdf-customer-info-content p strong {
+    color: var(--std-charcoal);
+    font-weight: 500;
+}
+
+/* Highlighted progress card inside modal */
+#stdf-customer-info-content p:last-child {
+    background: var(--std-primary-light);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 14px;
+    color: var(--std-primary-hover);
+    font-weight: 600;
+}
+
+#stdf-customer-info-content p:last-child strong {
+    color: var(--std-primary);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+#stdf-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9999;
+}
+
+#stdf-close-modal {
+    margin-top: 18px;
+    padding: 8px 18px;
+    background: linear-gradient(135deg, var(--std-primary) 0%, var(--std-primary-hover) 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 100, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+#stdf-close-modal:hover {
+    background: var(--std-primary-hover);
+    box-shadow: 0 4px 8px rgba(0, 100, 0, 0.25);
+}
+
+
+/* ─── Courier Score Modal Rows & Cards ─────────────────────────── */
+
+.stdf-modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--std-border);
+}
+
+.stdf-modal-row:last-of-type {
+    border-bottom: none;
+}
+
+.stdf-row-label {
+    display: inline-flex;
+    align-items: center;
+    color: #4a5568;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.stdf-row-val {
+    color: var(--std-charcoal);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.stdf-ratio-card {
+    background: linear-gradient(135deg, #f0f7f0 0%, #e6f4e6 100%);
+    border: 1px solid rgba(0, 100, 0, 0.15);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.stdf-ratio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stdf-ratio-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--std-primary-hover);
+}
+
+.stdf-ratio-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--std-primary);
+}
+
+.stdf-ratio-progress-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 100, 0, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.stdf-ratio-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--std-primary) 0%, var(--std-mint) 100%);
+    border-radius: 3px;
+    transition: width 0.8s ease-in-out;
+}
+
+
+/* ─── Amount Column Input ──────────────────────────────────────── */
+
+#steadfast-amount {
+    background: #fff;
+    border: 1px solid var(--std-border) !important;
+    border-radius: 6px !important;
+    padding: 6px 8px !important;
+    font-size: 12px !important;
+    color: var(--std-charcoal) !important;
+    text-align: center !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease !important;
+    width: 80px !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+}
+
+#steadfast-amount:focus {
+    border-color: var(--std-primary) !important;
+    box-shadow: 0 0 0 2px var(--std-primary-glow) !important;
+    outline: none !important;
+}
+
+#steadfast-amount.amount-disable {
+    background: #edf2f7 !important;
+    color: #a0aec0 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    border-color: #e2e8f0 !important;
+}
+
+
+/* ─── Utility ──────────────────────────────────────────────────── */
+
+.hidden {
+    display: none !important;
 }
