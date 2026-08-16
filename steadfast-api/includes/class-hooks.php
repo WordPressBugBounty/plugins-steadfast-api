@@ -98,9 +98,9 @@ if (!class_exists('STDF_Hooks')) {
 		function admin_orders_table_row_unlink($classes, $class, $post_id)
 		{
 
-			if (is_admin()) {
+			if (is_admin() && function_exists('get_current_screen')) {
 				$current_screen = get_current_screen();
-				if ($current_screen->base == 'edit' && $current_screen->post_type == 'shop_order') {
+				if ($current_screen && $current_screen->base == 'edit' && $current_screen->post_type == 'shop_order') {
 					$classes[] = 'no-link';
 				}
 			}
@@ -169,9 +169,9 @@ if (!class_exists('STDF_Hooks')) {
 			if ($checkbox == 'yes') {
 
 				$bulk_actions['send_to_steadFast_bulk'] = esc_html__('Send to SteadFast', 'steadfast-api');
-
-				return $bulk_actions;
 			}
+
+			return $bulk_actions;
 		}
 
 		/**

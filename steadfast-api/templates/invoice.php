@@ -21,7 +21,11 @@ $business_logo         = get_option( 'stdf_business_logo' ) ?? '';
 $customer        = stdf_get_order_customer_details( $order_id ) ?? '';
 $product_details = stdf_get_product_details( $order_id ) ?? '';
 
-$order          = wc_get_order( $order_id );
+$order = wc_get_order( $order_id );
+if ( ! is_a( $order, 'WC_Order' ) ) {
+	wp_redirect( home_url() );
+	exit();
+}
 $shipping_total = $order->get_shipping_total();
 
 $sku = stdf_get_product_sku_id( $order_id );

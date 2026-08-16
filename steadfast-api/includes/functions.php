@@ -132,9 +132,6 @@ if (! function_exists('stdf_get_order_customer_details')) {
 			$order_data     = $order->get_data();
 			$payment_method = $order->get_payment_method_title() ?? '';
 
-			$customer_id = $order->get_customer_id();
-			$customer    = new WC_Customer($customer_id);
-
 			$input_amount = get_post_meta($order_id, 'steadfast_amount', true);
 			$cod_amount   = ! empty($input_amount) || $input_amount == 0 ? (int) $input_amount : (int) $order_data['total'];
 
@@ -142,27 +139,27 @@ if (! function_exists('stdf_get_order_customer_details')) {
 			$billing_first_name = $order->get_billing_first_name() ?? '';
 			$billing_last_name  = $order->get_billing_last_name() ?? '';
 			$full_name          = $billing_first_name . ' ' . $billing_last_name;
-			$email              = $customer->get_email();
-			$customer_phone     = $customer->get_billing_phone();
+			$email              = $order->get_billing_email() ?? '';
+			$customer_phone     = $order->get_billing_phone() ?? '';
 
 			$address_info = [];
 
-			$billing_address_1 = $customer->get_billing_address_1();
+			$billing_address_1 = $order->get_billing_address_1();
 			if (! empty($billing_address_1)) {
 				$address_info[] = $billing_address_1;
 			}
 
-			$billing_city = $customer->get_billing_city();
+			$billing_city = $order->get_billing_city();
 			if (! empty($billing_city)) {
 				$address_info[] = $billing_city;
 			}
 
-			$billing_postcode = $customer->get_billing_postcode();
+			$billing_postcode = $order->get_billing_postcode();
 			if (! empty($billing_postcode)) {
 				$address_info[] = $billing_postcode;
 			}
 
-			$billing_country = $customer->get_billing_country();
+			$billing_country = $order->get_billing_country();
 			if (! empty($billing_country)) {
 				$address_info[] = $billing_country;
 			}
@@ -195,14 +192,23 @@ if (! function_exists('stdf_get_product_details')) {
 		if ($order) {
 			foreach ($order->get_items() as $item_id => $item) {
 
-				$product     = $item->get_product() ?? '';
+				$product     = $item->get_product();
 				$name        = $item->get_name() ?? '';
 				$quantity    = $item->get_quantity() ?? '';
 				$subtotal    = $item->get_subtotal() ?? '';
-				$price       = $product->get_price() ?? '';
-				$description = get_post($item['product_id'])->post_content;
+				
+				$price       = '';
+				if ( is_a( $product, 'WC_Product' ) ) {
+					$price = $product->get_price();
+				}
 
+				$description = '';
+				$product_post = get_post($item['product_id']);
+				if ( $product_post ) {
+					$description = $product_post->post_content;
+				}
 
+				$short_desc = $description;
 				$words = explode(' ', $description);
 				if (count($words) > 7) {
 					$words      = array_slice($words, 0, 7);
@@ -233,13 +239,13 @@ if (! function_exists('stdf_get_shipping_cost')) {
 	{
 
 		$order          = wc_get_order($order_id);
-		$shipping_total = $order->get_shipping_total();
-
-		if ($shipping_total) {
-			return $shipping_total;
-		} else {
-			return 00;
+		if ( is_a( $order, 'WC_Order' ) ) {
+			$shipping_total = $order->get_shipping_total();
+			if ($shipping_total) {
+				return $shipping_total;
+			}
 		}
+		return 0;
 	}
 }
 
@@ -254,9 +260,15 @@ if (! function_exists('stdf_get_product_sku_id')) {
 		$item_sku = array();
 		$order    = wc_get_order($order_id);
 
-		foreach ($order->get_items() as $item) {
-			$product    = wc_get_product($item->get_product_id());
-			$item_sku[] = $product->get_sku();
+		if ($order) {
+			foreach ($order->get_items() as $item) {
+				$product = wc_get_product($item->get_product_id());
+				if ( is_a( $product, 'WC_Product' ) ) {
+					$item_sku[] = $product->get_sku();
+				} else {
+					$item_sku[] = '';
+				}
+			}
 		}
 
 		return $item_sku;
@@ -499,7 +511,9 @@ if (!function_exists('stdf_customer_courier_score')) {
 
 		$success_ratio = stdf_calculate_success_rate($total_parcels, $total_delivered);
 
-		update_post_meta($order_id, 'stdf_success_ratio', $success_ratio);
+		if ($order_id > 0) {
+			update_post_meta($order_id, 'stdf_success_ratio', $success_ratio);
+		}
 
 		$order_info['success_ratio'] = $success_ratio;
 

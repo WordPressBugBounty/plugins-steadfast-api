@@ -92,10 +92,8 @@ if (!class_exists('STDF_Ajax')) {
             $input_id = isset($_POST['input_id']) ? sanitize_text_field(wp_unslash($_POST['input_id'])) : '';
 
             if (!empty($amount_nonce) && wp_verify_nonce($amount_nonce, 'stdf_amount')) {
-                $update = update_post_meta($input_id, 'steadfast_amount', $input_value);
-                if ($update === true) {
-                    wp_send_json_success(['message' => esc_html__('success', 'steadfast-api')], 200);
-                }
+                update_post_meta($input_id, 'steadfast_amount', $input_value);
+                wp_send_json_success(['message' => esc_html__('success', 'steadfast-api')], 200);
             }
         }
 
